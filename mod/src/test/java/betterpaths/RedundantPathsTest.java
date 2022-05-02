@@ -6,10 +6,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
-import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.rooms.MonsterRoom;
-import com.megacrit.cardcrawl.rooms.RestRoom;
-import com.megacrit.cardcrawl.rooms.ShopRoom;
+import com.megacrit.cardcrawl.rooms.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -91,6 +88,23 @@ final class RedundantPathsTest {
                 buildMap(
                         buildFloor(buildNode(null), buildNode(new RestRoom(), EdgeDirection.UpLeft)),
                         buildFloor(buildNode(new ShopRoom(), EdgeDirection.UpRight), buildNode(new MonsterRoom(), EdgeDirection.Up))
+                ),
+                map
+        );
+    }
+
+    @Test
+    void removePrefersKeepingCenterNode() {
+        ArrayList<ArrayList<MapRoomNode>> map = buildMap(
+                buildFloor(buildNode(new RestRoom(), EdgeDirection.UpRight), buildNode(new RestRoom(), EdgeDirection.Up), buildNode(new RestRoom(), EdgeDirection.UpLeft)),
+                buildFloor(buildNode(new ShopRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.Up), buildNode(new EventRoom(), EdgeDirection.Up))
+        );
+
+        RedundantPaths.remove(map);
+        assertMapEquals(
+                buildMap(
+                        buildFloor(buildNode(null), buildNode(new RestRoom(), EdgeDirection.Up), buildNode(null)),
+                        buildFloor(buildNode(new ShopRoom(), EdgeDirection.UpRight), buildNode(new MonsterRoom(), EdgeDirection.Up), buildNode(new EventRoom(), EdgeDirection.UpLeft))
                 ),
                 map
         );

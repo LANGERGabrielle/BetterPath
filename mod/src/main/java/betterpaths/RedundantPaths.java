@@ -21,16 +21,18 @@ public final class RedundantPaths {
     public static void remove(ArrayList<ArrayList<MapRoomNode>> map)
     {
         ArrayList<MapRoomNode> topFloor = map.get(map.size() - 1);
-        Map<Class<? extends AbstractRoom>, MapRoomNode> firstNodeByType = topFloor.stream().reduce(
-                new HashMap<>(),
-                (_firstNodeByType, node) -> {
-                    if (node.hasEdges() && !_firstNodeByType.containsKey(node.room.getClass())) {
-                        _firstNodeByType.put(node.room.getClass(), node);
-                    }
-                    return _firstNodeByType;
-                },
-                (a, b) -> a
-        );
+        Map<Class<? extends AbstractRoom>, MapRoomNode> firstNodeByType = topFloor.stream()
+                .sorted(Comparator.comparingDouble(a -> Math.abs(a.x - (float)(topFloor.size() - 1) / 2)))
+                .reduce(
+                    new HashMap<>(),
+                    (_firstNodeByType, node) -> {
+                        if (node.hasEdges() && !_firstNodeByType.containsKey(node.room.getClass())) {
+                            _firstNodeByType.put(node.room.getClass(), node);
+                        }
+                        return _firstNodeByType;
+                    },
+                    (a, b) -> a
+            );
         List<MapRoomNode> toDeleteNodes = topFloor.stream().filter(node -> node != firstNodeByType.get(node.room.getClass())).collect(Collectors.toList());
 
         toDeleteNodes.forEach(toDeleteNode -> toDeleteNode.getEdges().removeAll(toDeleteNode.getEdges()));

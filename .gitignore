@@ -1,9 +1,7 @@
 *.class
 
 # IntelliJ
-.idea/
 out/
-*.iml
 
 # Eclipse
 .classpath

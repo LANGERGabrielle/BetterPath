@@ -75,3 +75,4 @@ $RECYCLE.BIN/
 
 # Spriter files
 *.autosave.scml
+/mod/twitchconfig.txt

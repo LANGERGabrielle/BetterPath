@@ -110,6 +110,78 @@ final class RedundantPathsTest {
         );
     }
 
+    @Test
+    void removeSuboptimalPath0() {
+        ArrayList<ArrayList<MapRoomNode>> map = buildMap(
+                buildFloor(buildNode(new EventRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.Up)),
+                buildFloor(buildNode(new MonsterRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.UpLeft, EdgeDirection.Up))
+        );
+
+        RedundantPaths.remove(map);
+        assertMapEquals(
+                buildMap(
+                        buildFloor(buildNode(new EventRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.Up)),
+                        buildFloor(buildNode(null), buildNode(new MonsterRoom(), EdgeDirection.UpLeft, EdgeDirection.Up))
+                ),
+                map
+        );
+    }
+
+    @Test
+    void removeSuboptimalPath1() {
+        ArrayList<ArrayList<MapRoomNode>> map = buildMap(
+                buildFloor(buildNode(new EventRoom(), EdgeDirection.Up), buildNode(new RestRoom(), EdgeDirection.Up)),
+                buildFloor(buildNode(new MonsterRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.UpLeft, EdgeDirection.Up)),
+                buildFloor(buildNode(new MonsterRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.Up))
+        );
+
+        RedundantPaths.remove(map);
+        assertMapEquals(
+                buildMap(
+                        buildFloor(buildNode(new EventRoom(), EdgeDirection.Up), buildNode(new RestRoom(), EdgeDirection.Up)),
+                        buildFloor(buildNode(null), buildNode(new MonsterRoom(), EdgeDirection.UpLeft, EdgeDirection.Up)),
+                        buildFloor(buildNode(null), buildNode(new MonsterRoom(), EdgeDirection.Up))
+                ),
+                map
+        );
+    }
+
+    @Test
+    void removeSuboptimalPath2() {
+        ArrayList<ArrayList<MapRoomNode>> map = buildMap(
+                buildFloor(buildNode(new EventRoom(), EdgeDirection.Up), buildNode(new RestRoom(), EdgeDirection.Up)),
+                buildFloor(buildNode(new MonsterRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.UpLeft, EdgeDirection.Up)),
+                buildFloor(buildNode(new MonsterRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.Up)),
+                buildFloor(buildNode(new RestRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.Up))
+        );
+
+        RedundantPaths.remove(map);
+        assertMapEquals(
+                buildMap(
+                        buildFloor(buildNode(new EventRoom(), EdgeDirection.Up), buildNode(new RestRoom(), EdgeDirection.Up)),
+                        buildFloor(buildNode(new MonsterRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.UpLeft, EdgeDirection.Up)),
+                        buildFloor(buildNode(new MonsterRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.Up)),
+                        buildFloor(buildNode(new RestRoom(), EdgeDirection.Up), buildNode(new MonsterRoom(), EdgeDirection.Up))
+                ),
+                map
+        );
+    }
+
+    @Test
+    void removeHandleEmptyNodes() {
+        ArrayList<ArrayList<MapRoomNode>> map = buildMap(
+                buildFloor(buildNode(null), buildNode(null), buildNode(new MonsterRoom(), EdgeDirection.Up))
+        );
+
+        RedundantPaths.remove(map);
+        assertMapEquals(
+                buildMap(
+                        buildFloor(buildNode(null), buildNode(null), buildNode(new MonsterRoom(), EdgeDirection.Up))
+                ),
+                map
+        );
+    }
+
     void assertMapEquals(ArrayList<ArrayList<MapRoomNode>> expectedMap, ArrayList<ArrayList<MapRoomNode>> actualMap)
     {
         IntStream.range(0, expectedMap.size()).forEach(floorIndex -> {
